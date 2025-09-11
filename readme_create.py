@@ -1,4 +1,4 @@
-
+readme_content = """
 # Discogs-ROI
 
 A Python script that scrapes your personal Discogs collection and fetches marketplace stats to calculate the lowest resale price for each release. Data is saved as an Excel table with structured formatting for easy filtering and analysis. Ideal for collectors tracking potential ROI on vinyl records.
@@ -81,3 +81,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Discogs API: https://www.discogs.com/developers/
 - openpyxl: https://openpyxl.readthedocs.io/en/stable/
 - requests: https://docs.python-requests.org/en/latest/
+"""
+
+with open("README.md", "w", encoding="utf-8") as f:
+    f.write(readme_content)
+
+print("README.md created successfully.")
