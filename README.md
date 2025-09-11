@@ -1,7 +1,10 @@
+# Discogs Profit Calculation
 
-# Discogs-ROI
+---
 
-A Python script that scrapes your personal Discogs collection and fetches marketplace stats to calculate the lowest resale price for each release. Data is saved as an Excel table with structured formatting for easy filtering and analysis. Ideal for collectors tracking potential ROI on vinyl records.
+A **Python** and **Excel** project that scrapes your personal Discogs collection and fetches marketplace stats to calculate the lowest resale price for each release. Data is saved as an Excel table with structured formatting for easy filtering and analysis. 
+
+---
 
 ## Features
 
@@ -9,44 +12,88 @@ A Python script that scrapes your personal Discogs collection and fetches market
 - Retrieves marketplace statistics for each release
 - Calculates the lowest resale price
 - Saves data as a structured Excel table
+- Autosaves results periodically to avoid data loss
 - Includes a search function for filtering by artist, title, or release ID
 - Placeholder input handled via VBA in Excel
 
-## Installation
+---
 
-1. Clone the repository:
+## Project Background
+This project was a learning exercise to practice: 
+- Python API scraping
+- Automatically saving data into Excel tables
+- Using advanced Excel formulas for dynamic sorting and filtering
 
-git clone https://github.com/soupbadger/discogs-roi.git
-cd discogs-roi
-
-2. Install dependencies:
-
-pip install -r requirements.txt
-
-3. Obtain a Discogs API token: https://www.discogs.com/developers/#page:authentication
-
-4. Create a `.env` file in the project root and add your API token:
-
-DISCOGS_API_TOKEN=your_api_token_here
+---
 
 ## Usage
+* Obtain Discogs API key: https://www.discogs.com/settings/developers
 
-Run the Python script to fetch collection data and save it as an Excel file:
+* Edit the config section of discogs_pull.py:
 
-python discogs_roi.py
+```python
+# -- config ----
+API_TOKEN = "YOUR_API_KEY" # enter your Discogs API key
+USERNAME = "YOUR_USERNAME" # enter your Discogs username
+OUTPUT = "collection_roi_table.xlsx" # change output name
+REQ_SLEEP = 1.1 # No more requests than 60/min
+PER_PAGE = 100
+AUTOSAVE_INTERVAL = 10  # autosave after every N releases processed
+# --------------
+```
+* Run the Python script to fetch collection data and save it as an Excel file:
 
+```
+python discogs_pull.py
+```
 The output will be saved as `collection_roi_table.xlsx`.
+
+---
 
 ## Excel Search Formula
 
-Filter and sort your collection data dynamically in Excel:
+Dynamically filter and sort your collection with J2 as the search input cell.
+Results spill from L4 to O4 and expand downward automatically.
+Sort is set at lowest price descending (4, -1).
 
+* Change J2 to input cell
+* Change (4, -1) to sort by (output column, order)
+* Copy/Paste into output cell (currently L4)
+
+
+```excel
 =IF(OR($J$2="", $J$2="Search"), "", IFERROR(SORT(FILTER(CollectionTable[[release_id]:[lowest_price]], (ISNUMBER(SEARCH($J$2, CollectionTable[artist]))) + (ISNUMBER(SEARCH($J$2, CollectionTable[title]))) + (ISNUMBER(SEARCH($J$2, TEXT(CollectionTable[release_id], "0"))))), 4, -1), "Not found"))
+```
+
+
+```excel
+Readability
+
+
+=IF(OR($J$2="", $J$2="Search"), "", 
+    IFERROR(
+        SORT(   
+            FILTER(
+                CollectionTable[[release_id]:[lowest_price]], 
+                (ISNUMBER(SEARCH($J$2, CollectionTable[artist]))) 
+                + (ISNUMBER(SEARCH($J$2, CollectionTable[title]))) 
+                + (ISNUMBER(SEARCH($J$2, TEXT(CollectionTable[release_id], "0"))))),
+        4, -1), 
+    "Not found")
+)
+```
+
+
+
+---
+
 
 ## VBA Placeholder Code
 
-Handles clearing and restoring the search placeholder in Excel:
+Handles clearing and restoring the search placeholder in Excel
+(Optional)
 
+```VBA
 Private Sub Worksheet_SelectionChange(ByVal Target As Range)
     Dim inputCell As Range
     Set inputCell = Me.Range("J2") ' change to your input cell
@@ -67,17 +114,27 @@ Private Sub Worksheet_SelectionChange(ByVal Target As Range)
         End If
     End If
 End Sub
+```
 
-## Learning Experience
+---
 
-This project was a learning exercise where I tested ChatGPT, Gemini, and Claude to see which AI provided the best results for coding and documentation.
+## Screenshots & Demo GIF
 
-## License
+- **Screenshot of Excel Table:**  
+  ![Excel Table Screenshot](discogs_collection.png)
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+- **Demo GIF of Filtering & Sorting:**  
+  ![Demo GIF](demo.gif)
+
+
 
 ## Acknowledgements
 
-- Discogs API: https://www.discogs.com/developers/
-- openpyxl: https://openpyxl.readthedocs.io/en/stable/
-- requests: https://docs.python-requests.org/en/latest/
+Assistance with coding, Excel formulas, and Python scripting was obtained from AI tools including:
+
+- **ChatGPT (GPT-5-mini)**
+- **Gemini (2.5 Flash)**
+- **Claude (Sonnet 4)** — provided the most accurate and complete guidance
+ 
+
+All code was actively developed and refined with human oversight — issues were identified and corrected during the process.  
