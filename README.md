@@ -25,7 +25,7 @@ This automated tool provides a clear return on investment by translating raw col
 The final output is a structured Excel table with dynamic search and filtering capabilities.
 
 - **Screenshot of Excel Table:**
- 
+  ![Excel Table Screenshot](discogs_collection.png)
 
 - **Demo GIF of Filtering & Sorting:**
   ![Demo GIF](demo.gif)
